@@ -1,0 +1,10 @@
+classes:
+    - gluster::brick
+    - gluster::server::glance
+    - gluster::server::cinder
+parameters:
+    puppetserver: XX.XX.XX.XXX
+    glusterfs_server_peers:
+        - XX.XX.XX.XXX
+    replicacount: 2
+    storage_interface: eth2
