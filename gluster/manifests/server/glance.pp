@@ -2,7 +2,6 @@
 class gluster::server::glance {
 
     # ensure glance directory exists
-
     file { "/srv/gluster/glance":
         ensure => "directory",
         owner  => "glance",
@@ -11,7 +10,6 @@ class gluster::server::glance {
     }
 
     # exec glusterfs command to create glance vol if it doesn't exist and join cluster
-
     if $glance_exists == "0" {
 
     exec { "gluster create volume glance":

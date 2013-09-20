@@ -15,7 +15,6 @@ class gluster::brick {
     package { 'nfs-utils' : }
 
     # take care of the base gluster mount
-
     file { "/srv/gluster":
         ensure => "directory",
         owner  => "root",
@@ -24,7 +23,6 @@ class gluster::brick {
     }
 
     # probe brick peers
-
     exec { "gluster_peer_probe":
         command => "gluster peer probe ${peers}",
     }
