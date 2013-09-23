@@ -28,4 +28,13 @@ class gluster::server::cinder {
 
   }
 
+    if $cinder_active == "1" {
+
+    exec { "gluster volume start cinder_vol":
+     require => Mount['/srv/gluster/cinder'],
+     command => "/usr/sbin/gluster volume start cinder_vol",
+    }
+
+  }
+
 }

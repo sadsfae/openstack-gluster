@@ -26,6 +26,14 @@ class gluster::server::glance {
       command => "/usr/sbin/gluster volume create glance_vol replica ${replicacount} ${mystorageip}:/srv/gluster/glance ${gluster_server_peers}:/srv/gluster/glance",
     }
 
+ }
+    if $glance_active == "0" {
+
+    exec { "gluster volume start glance_vol":
+     require => Mount['/srv/gluster/glance'],
+     command => "/usr/sbin/gluster volume start glance_vol",
+    }
+
   }
 
 }
