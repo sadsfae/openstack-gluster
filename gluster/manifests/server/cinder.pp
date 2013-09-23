@@ -28,7 +28,7 @@ class gluster::server::cinder {
 
   }
 
-    if $cinder_active == "1" {
+    if $cinder_active == "0" {
 
     exec { "gluster volume start cinder_vol":
      require => Mount['/srv/gluster/cinder'],
