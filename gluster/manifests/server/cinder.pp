@@ -22,7 +22,7 @@ class gluster::server::cinder {
         default => $::mystorageip
     }
 
-    $gluster_server_peers = $::gluster_server_peers
+    $gluster_server_peers = $::gluster_server_peers ? {
         ''      => false,
         default => $::gluster_server_peers
     }
