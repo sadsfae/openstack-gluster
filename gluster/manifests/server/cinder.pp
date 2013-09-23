@@ -8,27 +8,22 @@ class gluster::server::cinder {
         group  => "root",
         mode   => "0755"
     }
-
+    
+    # ensure cinder LV is mounted
+    mount { '/srv/gluster/cinder':
+        device => $::cinder_device_id,
+        fstype => "xfs",
+        ensure => "mounted",
+        options => "defaults",
+        atboot => "true",
+    }
+      
     # exec glusterfs command to create cinder vol if it doesn't exist, join cluster
     if $cinder_exists == "0" {
 
-    $replicacount = $::replicacount ? {
-        ''      => 2,
-         default => $::replicacount
-    }
-
-    $mystorageip = $::mystorageip ? {
-        ''      => false,
-        default => $::mystorageip
-    }
-
-    $gluster_server_peers = $::gluster_server_peers ? {
-        ''      => false,
-        default => $::gluster_server_peers
-    }
-
     exec { "gluster create volume cinder":
-      command => "gluster volume create cinder_vol replica ${replicacount} ${mystorageip}:/srv/gluster/glance ${gluster_server_peers}:/srv/gluster/glance",
+      require => Mount['/srv/gluster/cinder'],
+      command => "/usr/sbin/gluster volume create cinder_vol replica ${replicacount} ${mystorageip}:/srv/gluster/cinder ${gluster_server_peers}:/srv/gluster/cinder",
     }
 
   }

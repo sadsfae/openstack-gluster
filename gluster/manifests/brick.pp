@@ -27,7 +27,7 @@ class gluster::brick {
 
     # probe brick peers
     exec { "gluster_peer_probe":
-        command => "/usr/sbin/gluster peer probe ${glusterfs_server_peers}",
+        command => "/usr/sbin/gluster peer probe ${gluster_server_peers}",
     }
 
     # ensure glusterd server is running

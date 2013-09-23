@@ -9,26 +9,21 @@ class gluster::server::glance {
         mode   => "0755",
     }
 
+    # ensure glance LV is mounted
+    mount { '/srv/gluster/glance':
+        device => $::glance_device_id,
+        fstype => "xfs",
+        ensure => "mounted",
+        options => "defaults",
+        atboot => "true",
+    }
+ 
     # exec glusterfs command to create glance vol if it doesn't exist, join cluster
     if $glance_exists == "0" {
-
-    $replicacount = $::replicacount ? {
-        ''      => 2,
-         default => $::replicacount
-    }
-
-    $mystorageip = $::mystorageip ? {
-        ''      => false,
-        default => $::mystorageip
-    }
-
-    $gluster_server_peers = $::gluster_server_peers ? {
-        ''      => false,
-        default => $::gluster_server_peers
-    }
-
+    
     exec { "gluster create volume glance":
-      command => "gluster volume create glance_vol replica ${replicacount} ${mystorageip}:/srv/gluster/glance ${gluster_server_peers}:/srv/gluster/glance",
+      require => Mount['/srv/gluster/glance'],
+      command => "/usr/sbin/gluster volume create glance_vol replica ${replicacount} ${mystorageip}:/srv/gluster/glance ${gluster_server_peers}:/srv/gluster/glance",
     }
 
   }
