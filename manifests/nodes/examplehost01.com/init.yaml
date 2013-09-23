@@ -4,6 +4,6 @@ classes:
     - gluster::server::cinder
 parameters:
     puppetmaster: XX.XX.XX.XXX
-    glusterfs_server_peers: "1.1.1.1"
+    gluster_server_peers: "1.1.1.1"
     replicacount: 2
     mystorageip: "1.1.1.1"
