@@ -3,8 +3,7 @@ classes:
     - gluster::server::glance
     - gluster::server::cinder
 parameters:
-    puppetserver: XX.XX.XX.XXX
-    glusterfs_server_peers:
-        - XX.XX.XX.XXX
+    puppetmaster: XX.XX.XX.XXX
+    glusterfs_server_peers: "1.1.1.1"
     replicacount: 2
-    storage_interface: eth2
+    mystorageip: "1.1.1.1"
