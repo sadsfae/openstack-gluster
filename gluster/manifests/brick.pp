@@ -8,9 +8,12 @@ class gluster::brick {
         ensure => installed
     }
 
-    package { 'gluster-server' : }
+    package { 'glusterfs-server' : }
     package { 'glusterfs' : }
     package { 'glusterfs-geo-replication' : }
+    package { 'glusterfs-fuse' :}
+    package { 'glusterfs-cli' :}
+    package { 'glusterfs-libs' :}
     package { 'rpcbind' : }
     package { 'nfs-utils' : }
 
@@ -24,7 +27,7 @@ class gluster::brick {
 
     # probe brick peers
     exec { "gluster_peer_probe":
-        command => "gluster peer probe ${peers}",
+        command => "/usr/sbin/gluster peer probe ${peers}",
     }
 
     # ensure glusterd server is running

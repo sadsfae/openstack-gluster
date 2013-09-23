@@ -4,9 +4,9 @@ class gluster::server::cinder {
     # ensure cinder dir exists
     file { "/srv/gluster/cinder":
         ensure => "directory",
-        owner  => "cinder",
-        group  => "cinder",
-        mode   => "0750"
+        owner  => "root",
+        group  => "root",
+        mode   => "0755"
     }
 
     # exec glusterfs command to create cinder vol if it doesn't exist, join cluster
