@@ -40,6 +40,7 @@ Puppet::Type.type(:volume).provide(:gluster) do
     return list
   end
 
+  # Not used
   def info?(str)
     value = nil
     res = %x(/usr/sbin/gluster volume info #{@resource[:name]})
