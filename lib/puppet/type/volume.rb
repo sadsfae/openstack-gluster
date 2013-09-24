@@ -15,14 +15,6 @@ module Puppet
       desc 'Volume path'
     end
 
-    newparam(:user) do
-      desc 'User'
-    end
-
-    newparam(:group) do
-      desc 'Group'
-    end
-
     newparam(:bricks) do
       desc 'List of Glusterfs server (cluster)'
     end
