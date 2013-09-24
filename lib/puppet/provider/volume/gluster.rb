@@ -55,6 +55,8 @@ Puppet::Type.type(:volume).provide(:gluster) do
     @resource[:bricks].each do |peer|
       gluster('peer', 'probe', peer)
     end
+  rescue
+    return true
   end
 
 end
