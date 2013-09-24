@@ -33,12 +33,11 @@ class gluster::brick (
 #    }
 
 
-# Not needed: Peers are probed when created a volume:
-#    exec { "gluster_peer_probe":
-#        command => "/usr/sbin/gluster peer probe ${gluster_server_peers}",
-#    }
+    exec { "gluster_peer_probe":
+        command => "/usr/sbin/gluster peer probe ${gluster_server_peers}",
+    }
 
     service { $server_service_name :
       ensure => "running",
-     }
+    }
 }
