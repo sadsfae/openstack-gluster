@@ -11,13 +11,13 @@ Puppet::Type.type(:volume).provide(:gluster) do
     return false
   end
 
-  def create
+  def create 
     if @resource[:bricks].class == String
-      gluster('volume', 'create', @resource[:name], brick_list)
+      gluster('volume', 'create', @resource[:name], "#{@resource[:bricks]}:#{File.join(@resource[:path], @resource[:name])}")
     else
       probe
-      gluster('volume', 'create', @resource[:name],
-        "replica #{@resource[:bricks].size}", brick_list)
+      # Had to spawn directly because of the optional_commands parameters nightmare!
+      %x(/usr/sbin/gluster volume create #{@resource[:name]} replica #{@resource[:bricks].size}", #{brick_list})
     end
 
     gluster('volume', 'start', @resource[:name])
