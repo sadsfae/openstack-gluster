@@ -13,11 +13,11 @@ Puppet::Type.type(:volume).provide(:gluster) do
 
   def create
     if @resource[:bricks].class == String
-      gluster('volume', 'create', @resource[:name], bricks_list)
+      gluster('volume', 'create', @resource[:name], brick_list)
     else
       probe
       gluster('volume', 'create', @resource[:name],
-        "replica #{@resource[:bricks].size}", bricks_list)
+        "replica #{@resource[:bricks].size}", brick_list)
     end
 
     gluster('volume', 'start', @resource[:name])
@@ -31,11 +31,11 @@ Puppet::Type.type(:volume).provide(:gluster) do
 
   private 
 
-  def bricks_list
+  def brick_list
     volume = File.join(@resource[:path], @resource[:name])
     list = ''
     @resource[:bricks].each do |brick|
-      list << "#{brick}:#{volume}"
+      list << "#{brick}:#{volume} "
     end
     return list
   end
