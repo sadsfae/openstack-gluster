@@ -16,8 +16,9 @@ Puppet::Type.type(:volume).provide(:gluster) do
       gluster('volume', 'create', @resource[:name], brick_list)
     else
       probe
-      # Had to spawn directly because the optional_commands parameters nightmare!
-      system("/usr/sbin/gluster volume create #{@resource[:name]} replica #{@resource[:bricks].size} #{brick_list}")
+      # Spawning directly: because optional_commands nightmare
+      puts("/usr/sbin/gluster volume create #{@resource[:name]} replica #{@resource[:replica]} #{brick_list}")
+      system("/usr/sbin/gluster volume create #{@resource[:name]} replica #{@resource[:replica]} #{brick_list}")
     end
 
     gluster('volume', 'start', @resource[:name])

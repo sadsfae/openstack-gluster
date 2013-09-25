@@ -3,41 +3,32 @@ class gluster::brick (
   $server_package_name          = $gluster::params::server_package_name,
   $geo_replication_package_name = $gluster::params::geo_replication_package_name,
   $server_service_name          = $gluster::params::server_service_name,
+  $server_peers                 = $gluster::params::server_peers,
   ) inherits gluster::params {
-    Package {
-        ensure => installed
+
+  Package {
+    ensure => installed
+  }
+
+  package { [ $server_package_name, $geo_replication_package_name ]:
+  } ->
+
+  service { $server_service_name:
+    ensure => 'running',
+  } #->
+
+  # Future version
+  #$servers_peers.each { |$peer|
+  #  exec { 'gluster_peer_probe':
+  #    command => "/usr/sbin/gluster peer probe $peer"
+  #  }
+  #}
+  # But in the meantime:
+  if $server_peers {
+    $probes = repeat_cmd('gluster peer probe', $server_peers)
+    exec { 'gluster_peer_probe':
+      command => $probes,
+      path    => "/usr/sbin"
     }
-
-    package { $server_package_name : }
-    package { $geo_replication_package_name : }
-
-# Included as dependencies:
-#    package { 'glusterfs' : }
-#    package { 'glusterfs-fuse' :}
-#    package { 'glusterfs-cli' :}
-#    package { 'glusterfs-libs' :}
-#    package { 'rpcbind' : }
-
-# Out of scope:
-#    package { 'nfs-utils' : }
-
-
-# Out of scope: Provisioning takes care of partitioning, including mount points
-#
-#    # take care of the base gluster mount
-#    file { "/srv/gluster":
-#        ensure => "directory",
-#        owner  => "root",
-#        group  => "root",
-#        mode   => "0755",
-#    }
-
-
-    exec { "gluster_peer_probe":
-        command => "/usr/sbin/gluster peer probe ${gluster_server_peers}",
-    }
-
-    service { $server_service_name :
-      ensure => "running",
-    }
+  }
 }
