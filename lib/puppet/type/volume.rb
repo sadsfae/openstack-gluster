@@ -15,7 +15,11 @@ module Puppet
       desc 'Volume path'
     end
 
-    newparam(:replica) do
+    newparam(:peers) do
+      desc 'Cluster peers'
+    end
+
+    newparam(:replica_count) do
       desc 'Replication count'
 
       defaultto 2
@@ -27,10 +31,6 @@ module Puppet
           super
         end
       end
-    end
-
-    newparam(:bricks) do
-      desc 'List of Glusterfs server (cluster)'
     end
   end
 end

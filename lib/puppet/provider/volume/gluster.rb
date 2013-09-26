@@ -6,59 +6,67 @@ Puppet::Type.type(:volume).provide(:gluster) do
   optional_commands :gluster => '/usr/sbin/gluster'
 
   def exists?
-    gluster('volume', 'status', @resource[:name]) 
+    #gluster('volume', 'status', @resource[:name])
+    volume_exist?
   rescue Puppet::ExecutionFailure
     return false
   end
 
-  def create 
-    if @resource[:bricks].class == String
-      gluster('volume', 'create', @resource[:name], brick_list)
-    else
-      probe
-      # Spawning directly: because optional_commands nightmare
-      puts("/usr/sbin/gluster volume create #{@resource[:name]} replica #{@resource[:replica]} #{brick_list}")
-      system("/usr/sbin/gluster volume create #{@resource[:name]} replica #{@resource[:replica]} #{brick_list}")
+  def create
+    cluster = Cluster.new(@resource[:peers])
+    if cluster.attached?
+      #  gluster('volume', 'create', @resource[:name], 'replica', @resource[:replica_count], bricks)
+      %x(/usr/sbin/gluster volume create #{@resource[:name]} replica #{@resource[:replica_count]} #{bricks})
+      gluster('volume', 'start', @resource[:name]) if $?
     end
-
-    gluster('volume', 'start', @resource[:name])
   end
 
   def destroy
-    # Not working: gluster command needs confirmation!
+    # Not working: gluster command needs keyboard confirmation!
     # gluster('volume', 'stop', @resource[:name])
     # gluster('volume', 'delete', @resource[:name])
   end
 
-  private 
+  private
 
-  def brick_list
-    volume = File.join(@resource[:path], @resource[:name])
+  def bricks
     list = ''
-    @resource[:bricks].each do |brick|
-      list << "#{brick}:#{volume} "
+    @resource[:peers].each do |brick|
+      list << "#{brick}:#{@resource[:path]} "
     end
     return list
   end
-
-  # Not used
-  def info?(str)
-    value = nil
-    res = %x(/usr/sbin/gluster volume info #{@resource[:name]})
-    if $?.success?
-      res.each_line do |line|
-        value = true if line =~ /#{str}/i
-      end
-    end
-    return value
+  
+  def volume_exist?
+    return true if gluster('volume', 'info',  resource[:name])
+  rescue Puppet::ExecutionFailure
+    return false
   end
 
-  def probe
-    @resource[:bricks].each do |peer|
-      gluster('peer', 'probe', peer)
+  class Gluster
+    def initialize(host)
+      @host = host
     end
-  rescue
-    return true
+
+    def probe
+      %x(/usr/sbin/gluster peer probe #{@host})
+      return true if $? == 0
+    end
   end
 
+  class Cluster
+    def initialize(peers)
+      @peers = peers
+      @cluster = []
+      @peers.each { |peer|
+        @cluster << Gluster.new(peer)
+      }
+    end
+
+    def attached?
+      @cluster.each { |host| 
+        return false unless host.probe
+      }
+    end
+  end
 end
