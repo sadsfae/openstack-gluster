@@ -16,4 +16,11 @@ class quickstack::storage {
     peers          => [ '192.168.0.2', '192.168.0.3', '192.168.0.4' ],
     replica_count  => '3',
   }
+
+  volume { 'swift':
+    ensure         => present,
+    path           => '/srv/gluster/swift',
+    peers          => [ '192.168.0.2', '192.168.0.3', '192.168.0.4' ],
+    replica_count  => '3',
+  }
 }
