@@ -1,8 +1,7 @@
 # quickstack storage class
 class quickstack::storage {
 
-  class { 'gluster::server':
-  }
+  class { 'gluster::server': }
 
   volume { 'glance':
     ensure         => present,
